@@ -1,0 +1,8 @@
+variavel,cardinalidade,categorias_raras
+Month,10,0
+OperatingSystems,8,4
+Browser,12,5
+Region,9,0
+TrafficType,19,8
+VisitorType,3,1
+Weekend,2,0
