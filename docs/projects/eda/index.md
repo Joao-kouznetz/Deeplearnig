@@ -17,8 +17,8 @@ nenhum classificador é treinado e nenhuma métrica de desempenho preditivo é a
 A base **Stroke Prediction** é um dos exemplos de classificação explicitamente linkados no
 [enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). Ela foi selecionada pelo assistente
 entre os exemplos; a escolha específica ainda pode ser confirmada ou alterada pelo aluno.
-**Uso de IA:** implementação, redação e interpretações foram produzidas com OpenAI Codex;
-os números são resultados de execução, e a revisão e compreensão pelo aluno continuam necessárias.
+
+**Uso de IA:** implementação, redação e interpretações foram auxiliados com OpenAI Codex;
 
 **Escopo:** estudo educacional e observacional. Não há data de coleta, instante do AVC ou horizonte
 preditivo: não interpretamos associações como risco futuro, causalidade ou recomendação clínica.
