@@ -227,7 +227,6 @@ nenhum classificador é treinado e nenhuma métrica de desempenho preditivo é a
 A base **Stroke Prediction** é um dos exemplos de classificação explicitamente linkados no
 [enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). Ela foi selecionada pelo assistente
 entre os exemplos; a escolha específica ainda pode ser confirmada ou alterada pelo aluno.
-[Conferência com as aulas e exercícios](course_alignment.md).
 **Uso de IA:** implementação, redação e interpretações foram produzidas com OpenAI Codex;
 os números são resultados de execução, e a revisão e compreensão pelo aluno continuam necessárias.
 
