@@ -14,6 +14,7 @@ no relatório; o aluno precisa revisar e compreender cada decisão e número.
 - [Relatório completo, na estrutura da rubrica](docs/projects/eda/index.md)
 - [Proposta e vínculo da base com o enunciado](docs/projects/eda/proposal.md)
 - [Instruções detalhadas de reprodução](docs/projects/eda/reproduce.md)
+- [Conferência com aulas e exercícios](docs/projects/eda/course_alignment.md)
 - [Pipeline importável](docs/projects/eda/code/preprocessing.py)
 - [Tabelas e resultados auditáveis](docs/projects/eda/tables/)
 - [Fonte, atribuição e integridade dos dados](data/README.md)
@@ -51,7 +52,7 @@ uv pip install --python .venv/bin/python -r requirements.txt
 
 O comando principal baixa a versão 1 oficial do Kaggle e confere o SHA-256, divide
 os registros com seed 42, calcula as estatísticas do treino, ajusta o pipeline e
-gera nove figuras, tabelas e o relatório. Não é necessária chave Kaggle para o
+gera dez figuras, tabelas e o relatório. Não é necessária chave Kaggle para o
 endpoint público utilizado. Se a fonte estiver temporariamente indisponível,
 execute novamente; o programa não troca de arquivo ou fonte silenciosamente.
 A primeira execução de UMAP/Numba pode levar alguns minutos.
@@ -90,7 +91,7 @@ primeiro deployment bem-sucedido.
 ## Escolha da base e atribuição
 
 Stroke Prediction é um dos exemplos de classificação do próprio enunciado e foi
-escolhido conforme orientação do aluno. A página contém uma regra geral de
+selecionado pelo assistente; a escolha específica ainda pode ser confirmada pelo aluno. A página contém uma regra geral de
 aprovação e não publica decisões individuais por equipe; o repositório não
 inventa comprovante de formulário ou aprovação individual.
 

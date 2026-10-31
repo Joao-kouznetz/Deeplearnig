@@ -397,10 +397,10 @@ def projections(matrix, train, output=PROJECT, sample_size=2000):
         xlabel="Número de componentes",
         ylabel="Variância acumulada (%)",
         ylim=(0, 102),
-        title="Figura 8 — Variância explicada da matriz preparada",
+        title="Figura 9 — Variância explicada da matriz preparada",
     )
     ax.legend()
-    save_figure(fig, "08_pca_variance", output)
+    save_figure(fig, "09_pca_variance", output)
 
     fig, axes = plt.subplots(2, 3, figsize=(15, 9))
     for ax, (name, embedding) in zip(axes.flat, embeddings.items(), strict=False):
@@ -415,9 +415,9 @@ def projections(matrix, train, output=PROJECT, sample_size=2000):
         ax.legend(handles=LABELS, fontsize=8)
     axes.flat[-1].set_visible(False)
     fig.suptitle(
-        f"Figura 9 — Mesmas {len(sample):,} registros de treino em cinco projeções 2D (seed=42)"
+        f"Figura 10 — Mesmas {len(sample):,} registros de treino em cinco projeções 2D (seed=42)"
     )
-    save_figure(fig, "09_projections", output)
+    save_figure(fig, "10_projections", output)
 
     diagnostics = []
     for name, embedding in embeddings.items():
@@ -438,3 +438,39 @@ def projections(matrix, train, output=PROJECT, sample_size=2000):
         coordinates[f"{name}_1"], coordinates[f"{name}_2"] = embedding[:, 0], embedding[:, 1]
     coordinates.to_csv(output / "tables/projections.csv", index=False, float_format="%.10g")
     return pca, diagnostics, positions
+
+
+def preprocessing_diagnostics(train, train_matrix, test_matrix, feature_names, output=PROJECT):
+    """Faixas finais e comparação antes/depois, sem reajustar transformadores."""
+    rows = []
+    for partition, matrix in [("treino", train_matrix), ("teste", test_matrix)]:
+        for column in NUMERIC:
+            name = ("log__" if column in LOG_FEATURES else "direct__") + column
+            values = matrix[:, list(feature_names).index(name)]
+            rows.append(
+                {
+                    "particao": partition,
+                    "feature": name,
+                    "min": values.min(),
+                    "max": values.max(),
+                    "media": values.mean(),
+                    "std_ddof0": values.std(),
+                }
+            )
+    table = pd.DataFrame(rows)
+    table.to_csv(output / "tables/scaling_checks.csv", index=False, float_format="%.10g")
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+    column = "avg_glucose_level"
+    transformed = train_matrix[:, list(feature_names).index("log__" + column)]
+    for ax, values, label in zip(
+        axes,
+        [train[column], transformed],
+        [AXIS_LABELS[column], "log1p(glicose), padronizada no treino"],
+        strict=True,
+    ):
+        ax.hist(values, bins=30, color=COLORS[0], label="Mesmos registros de treino")
+        ax.set(xlabel=label, ylabel="Registros")
+        ax.legend(fontsize=8)
+    fig.suptitle("Figura 8 — Glicose antes e depois do pré-processamento (treino)")
+    save_figure(fig, "08_transformation", output)
+    return table

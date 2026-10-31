@@ -14,7 +14,7 @@ os.environ.setdefault("MKL_NUM_THREADS", "1")
 import joblib
 import numpy as np
 import pandas as pd
-from analysis import descriptive_tables, eda_figures, projections
+from analysis import descriptive_tables, eda_figures, preprocessing_diagnostics, projections
 from dataset import (
     CATEGORICAL,
     FEATURES,
@@ -73,6 +73,7 @@ def main():
     checks = pipeline_checks(preprocessor, train, test, train_matrix, test_matrix)
     pd.DataFrame({"feature": names}).to_csv(PROJECT / "tables/feature_names.csv", index=False)
     print(f"Pipeline: {train_matrix.shape} / {test_matrix.shape}; saídas finitas", flush=True)
+    tables["scaling_checks"] = preprocessing_diagnostics(train, train_matrix, test_matrix, names)
     eda_figures(raw, train, tables)
     pca, diagnostics, positions = projections(train_matrix, train)
     report(
