@@ -1,0 +1,25 @@
+feature,PC1,PC2
+log__avg_glucose_level,0.3036248624,0.943027103
+log__bmi,0.5431297201,-0.2002975579
+direct__age,0.6276273576,-0.1543723183
+missing__missingindicator_bmi,0.008869764985,0.01487195573
+category__gender_Female,0.004296500392,-0.06876464771
+category__gender_Male,-0.004181355852,0.06840477696
+category__gender_Other,-0.0001151445398,0.0003598707517
+category__hypertension_0,-0.0604928348,-0.01546644527
+category__hypertension_1,0.0604928348,0.01546644527
+category__heart_disease_0,-0.03743421541,-0.02271814833
+category__heart_disease_1,0.03743421541,0.02271814833
+category__ever_married_No,-0.2556842603,0.09238840262
+category__ever_married_Yes,0.2556842603,-0.09238840262
+category__work_type_Govt_job,0.03465515574,-0.01237831995
+category__work_type_Never_worked,-0.002986482015,0.0008702298665
+category__work_type_Private,0.0786774568,-0.05643415145
+category__work_type_Self-employed,0.06581344626,-0.01773003164
+category__work_type_children,-0.1761595768,0.08567227318
+category__Residence_type_Rural,-0.002330066913,0.00678971005
+category__Residence_type_Urban,0.002330066913,-0.00678971005
+category__smoking_status_Unknown,-0.1606198637,0.06879440419
+category__smoking_status_formerly smoked,0.06438620964,-0.01452292846
+category__smoking_status_never smoked,0.06502456273,-0.04991304149
+category__smoking_status_smokes,0.03120909129,-0.004358434243

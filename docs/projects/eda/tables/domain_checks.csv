@@ -1,0 +1,7 @@
+regra,n
+id repetido,0
+age < 0 ou > 120,0
+avg_glucose_level <= 0,0
+bmi <= 0 (entre observados),0
+hypertension fora de 0/1,0
+heart_disease fora de 0/1,0

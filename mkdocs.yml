@@ -1,0 +1,30 @@
+site_name: Deeplearnig — Portfólio de Deep Learning
+site_description: Análise exploratória do Stroke Prediction Dataset indicado no enunciado
+site_url: https://joao-kouznetz.github.io/Deeplearnig/
+repo_url: https://github.com/Joao-kouznetz/Deeplearnig
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    primary: indigo
+    accent: teal
+  features:
+    - navigation.sections
+    - content.code.copy
+nav:
+  - Início: index.md
+  - Projeto EDA: projects/eda/index.md
+  - Proposta e aprovação: projects/eda/proposal.md
+  - Reproduzir a análise: projects/eda/reproduce.md
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets:
+      check_paths: true
+exclude_docs: |
+  **/__pycache__/**

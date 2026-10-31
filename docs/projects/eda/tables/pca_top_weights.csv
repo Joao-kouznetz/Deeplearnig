@@ -1,0 +1,11 @@
+componente,feature,peso
+PC1,direct__age,0.6276273576
+PC1,log__bmi,0.5431297201
+PC1,log__avg_glucose_level,0.3036248624
+PC1,category__ever_married_No,-0.2556842603
+PC1,category__ever_married_Yes,0.2556842603
+PC2,log__avg_glucose_level,0.943027103
+PC2,log__bmi,-0.2002975579
+PC2,direct__age,-0.1543723183
+PC2,category__ever_married_Yes,-0.09238840262
+PC2,category__ever_married_No,0.09238840262

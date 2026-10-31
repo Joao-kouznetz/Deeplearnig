@@ -1,0 +1,11 @@
+#,Resumo dos resultados,Valor
+1,"Dataset, tarefa e alvo","Stroke Prediction (fedesoriano, Kaggle, v1); classificação; stroke"
+2,Instâncias × atributos (numéricos / categóricos),"5.110 × 12 colunas no CSV; 10 atributos (3 / 7), mais id e alvo; id descartado"
+3,Coluna com mais ausentes e percentual,"Ausência declarada: smoking_status, 1.544 Unknown (30,22%); NaN: bmi, 201 (3,93%)"
+4,Colunas descartadas e motivo,id: identificador; stroke separado como alvo
+5,Classe minoritária (%),"stroke=1: 249 (4,87%)"
+6,Tamanhos de treino e teste,4.088 / 1.022; seed=42; estratificação por perfis
+7,Par numérico mais correlacionado e valor,age × bmi; Spearman ρ=0.376325; n=3931
+8,Linhas afetadas pela estratégia de outliers,Treino: 561 sinalizadas por IQR; 0 removidas/limitadas; 4.088 alteradas por log1p
+9,Variância explicada por PC1 + PC2,"45,90%"
+10,Shape de treino e teste após pipeline,"(4088, 24) / (1022, 24); 0 NaN e 0 infinitos"

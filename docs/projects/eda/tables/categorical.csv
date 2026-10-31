@@ -1,0 +1,21 @@
+variavel,categoria,n,pct,rara_menos_1pct
+gender,Female,2413,59.02641879,False
+gender,Male,1674,40.94911937,False
+gender,Other,1,0.02446183953,True
+hypertension,0,3708,90.70450098,False
+hypertension,1,380,9.295499022,False
+heart_disease,0,3867,94.59393346,False
+heart_disease,1,221,5.406066536,False
+ever_married,Yes,2687,65.72896282,False
+ever_married,No,1401,34.27103718,False
+work_type,Private,2370,57.97455969,False
+work_type,Self-employed,635,15.5332681,False
+work_type,children,534,13.06262231,False
+work_type,Govt_job,533,13.03816047,False
+work_type,Never_worked,16,0.3913894325,True
+Residence_type,Urban,2055,50.26908023,False
+Residence_type,Rural,2033,49.73091977,False
+smoking_status,never smoked,1518,37.13307241,False
+smoking_status,Unknown,1250,30.57729941,False
+smoking_status,formerly smoked,704,17.22113503,False
+smoking_status,smokes,616,15.06849315,False

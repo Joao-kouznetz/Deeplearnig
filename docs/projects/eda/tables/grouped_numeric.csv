@@ -1,0 +1,5 @@
+hypertension,variavel,n,q1,mediana,q3,IQR
+0,age,3708,23,42,59,36
+0,avg_glucose_level,3708,77.1975,91.265,112.1975,35
+1,age,380,53,63,74,21
+1,avg_glucose_level,380,79.1925,100.66,191.0225,111.83
