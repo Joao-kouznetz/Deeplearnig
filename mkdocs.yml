@@ -15,7 +15,6 @@ nav:
   - Início: index.md
   - Projeto EDA: projects/eda/index.md
   - Proposta e aprovação: projects/eda/proposal.md
-  - Conferência com o curso: projects/eda/course_alignment.md
   - Reproduzir a análise: projects/eda/reproduce.md
 markdown_extensions:
   - admonition
