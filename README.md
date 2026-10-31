@@ -3,13 +3,12 @@
 Análise exploratória do **Stroke Prediction Dataset**, de fedesoriano no Kaggle,
 para o [Projeto 1 de ANN-DL 2026.2 do Insper](https://insper.github.io/ann-dl/2026.2/projects/eda/).
 Essa base está explicitamente indicada entre os exemplos de **classificação** no
-enunciado. O alvo discreto é `stroke` (0/1). A entrega prepara os dados para uma
-rede neural posterior; nenhum classificador é treinado nesta etapa.
+enunciado. 
 
 **Este projeto foi feito usando inteligência artificial (OpenAI Codex)**,
 incluindo implementação, gráficos, testes, análise e redação. Os resultados foram
 calculados pela execução do código. O uso de IA também está declarado em `ai_use`
-no relatório; o aluno precisa revisar e compreender cada decisão e número.
+no relatório;
 
 - [Relatório completo, na estrutura da rubrica](docs/projects/eda/index.md)
 - [Proposta e vínculo da base com o enunciado](docs/projects/eda/proposal.md)
