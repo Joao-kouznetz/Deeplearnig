@@ -15,7 +15,17 @@ import joblib
 import numpy as np
 import pandas as pd
 from analysis import descriptive_tables, eda_figures, projections
-from dataset import CATEGORICAL, FEATURES, PROJECT, ROOT, SHA256, download, load_data, split_data
+from dataset import (
+    CATEGORICAL,
+    FEATURES,
+    PROJECT,
+    ROOT,
+    SHA256,
+    TARGET,
+    download,
+    load_data,
+    split_data,
+)
 from preprocessing import make_preprocessor
 from reporting import report
 
@@ -24,18 +34,18 @@ def pipeline_checks(preprocessor, train, test, train_matrix, test_matrix):
     if not np.isfinite(train_matrix).all() or not np.isfinite(test_matrix).all():
         raise AssertionError("A saída contém NaN ou infinito.")
     names = preprocessor.get_feature_names_out()
-    if any("Revenue" in name or "PageValues" in name for name in names):
+    if any(name.endswith("__id") or name.endswith(f"__{TARGET}") for name in names):
         raise AssertionError("Coluna descartada vazou para a saída.")
     probe = test[FEATURES].iloc[:2].copy()
-    probe["Month"] = "Nunca_observado"
-    probe.loc[probe.index[0], "Administrative"] = np.nan
-    probe.loc[probe.index[0], "VisitorType"] = np.nan
+    probe["work_type"] = "Nunca_observado"
+    probe.loc[probe.index[0], "bmi"] = np.nan
+    probe.loc[probe.index[0], "gender"] = np.nan
     transformed = preprocessor.transform(probe)
-    month_columns = np.array([name.startswith("category__Month_") for name in names])
+    unknown_columns = np.array([name.startswith("category__work_type_") for name in names])
     if (
         transformed.shape[1] != len(names)
         or not np.isfinite(transformed).all()
-        or transformed[:, month_columns].any()
+        or transformed[:, unknown_columns].any()
     ):
         raise AssertionError("Falhou o contrato para ausentes/categoria inédita.")
     unseen = {col: sorted(set(test[col]) - set(train[col])) for col in CATEGORICAL}
@@ -54,7 +64,7 @@ def main():
     download()
     raw = load_data()
     clean, train, test = split_data(raw)
-    print(f"Sessões: bruto={len(raw)}, treino={len(train)}, teste={len(test)}", flush=True)
+    print(f"Registros: bruto={len(raw)}, treino={len(train)}, teste={len(test)}", flush=True)
     tables = descriptive_tables(raw, clean, train, test)
     preprocessor = make_preprocessor()
     train_matrix = preprocessor.fit_transform(train[FEATURES])

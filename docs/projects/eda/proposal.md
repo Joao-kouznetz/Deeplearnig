@@ -1,40 +1,36 @@
 # 0. Proposta da base
 
-**Status: preparada; envio ao formulário e aprovação docente não comprovados.**
-A base não foi apresentada como já aprovada. O enunciado permite propor até três
-opções; escolhemos uma e documentamos o risco principal, sem criar alternativas
-que não serão analisadas.
+**Base escolhida: Stroke Prediction**, que aparece explicitamente em
+[Examples with the expected profile → Classification, no enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal).
+A escolha segue a orientação do aluno de usar uma das bases indicadas naquela página.
 
 | Campo solicitado | Proposta |
 | --- | --- |
-| Dataset | Online Shoppers Purchasing Intention Dataset |
-| Fonte pública | [UCI Machine Learning Repository, ID 468](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset) |
-| DOI | [10.24432/C5F88Q](https://doi.org/10.24432/C5F88Q) |
-| Dimensões originais | 12.330 linhas × 18 colunas: 17 atributos e 1 alvo |
+| Dataset | Stroke Prediction Dataset, fedesoriano, Kaggle, versão 1 |
+| Fonte pública | [Página linkada pelo professor](https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset) |
+| Dimensões | 5.110 linhas × 12 colunas |
+| Atributos úteis | 10: 3 numéricos e 7 categóricos, além de id e alvo |
 | Tarefa | Classificação binária |
-| Alvo presente no arquivo | `Revenue`: sessão com compra (True) ou sem compra (False) |
-| Atributos numéricos | 10; 9 retidos após excluir PageValues |
-| Atributos categóricos | 7; códigos numéricos nominais tratados como categorias |
-| Licença | CC BY 4.0, com atribuição a C. Sakar e Yomi Kastro (2018) |
-| Repositório da equipe | [Joao-kouznetz/Deeplearnig](https://github.com/Joao-kouznetz/Deeplearnig) |
-| Integrante identificado na configuração Git | João K Bresser |
+| Alvo no arquivo | `stroke`, 0 = ausência de AVC registrado; 1 = AVC registrado |
+| Descarte por domínio | `id`, identificador do registro |
+| Motivação | Estudar desbalanceamento, ausência de IMC e relações entre atributos mistos e o alvo |
+| Primeiro risco | Fonte confidencial e ausência de datas impedem verificar cronologia e representatividade |
+| Repositório | [Joao-kouznetz/Deeplearnig](https://github.com/Joao-kouznetz/Deeplearnig) |
+| Integrante identificado no Git | João K Bresser |
 
-As sessões permitem investigar como volume e duração de navegação, mês e tipo de
-visitante se associam à ocorrência de compra. O desbalanceamento, as caudas longas
-e os atributos mistos tornam a base adequada para estudar preparação para uma
-rede neural, com porte suficiente para comparações de redução de dimensionalidade.
+A base é adequada para uma EDA com variáveis numéricas e categóricas, mais de mil
+registros e alvo presente no CSV. As caudas de glicose/IMC e as ausências permitem
+justificar decisões concretas de pré-processamento para uma futura rede neural.
+A análise é educacional e observacional, sem apresentar associação como causa ou
+como estimativa de risco futuro.
 
-**Primeiro risco:** `PageValues` depende da atribuição de valor a páginas visitadas
-antes de transações; o arquivo não comprova sua disponibilidade anterior ao
-desfecho. Excluímos essa coluna do pipeline por precaução. `BounceRates` e
-`ExitRates` também dependem de agregados históricos cuja janela não é informada;
-o escopo inicial é retrospectivo, sem alegar previsão durante a sessão.
+A página do trabalho apresenta exemplos e a regra geral de aprovação da proposta;
+não publica decisões individuais por equipe. O vínculo com o enunciado está
+verificado, mas não inventamos comprovante de envio de formulário ou aprovação
+individual. A base será mantida na futura entrega de classificação.
 
-O aluno precisa confirmar com o professor se esta base já foi usada na turma e
-obter sua aprovação. O tamanho e o caráter público são verificáveis, mas não
-permitem inferir aprovação acadêmica. A mesma base deverá continuar na próxima
-entrega de classificação.
+Atribuição: fedesoriano (2021). Os metadados reservam os direitos aos autores
+originais e indicam uso educacional, com origem confidencial. O CSV bruto não é
+redistribuído; o código faz download oficial da versão 1 com verificação de hash.
 
-[Enunciado e formulário indicados pela disciplina](https://insper.github.io/ann-dl/2026.2/projects/eda/).
-
-**Uso de IA:** proposta elaborada com OpenAI Codex. [Voltar ao relatório](index.md).
+**Uso de IA:** proposta elaborada com OpenAI Codex. [Relatório](index.md).

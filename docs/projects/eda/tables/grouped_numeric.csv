@@ -1,7 +1,5 @@
-VisitorType,variavel,n,q1,mediana,q3,IQR
-New_Visitor,ProductRelated,1355,7,13,23,16
-New_Visitor,ExitRates,1355,0.006896552,0.013333333,0.024691358,0.017794806
-Other,ProductRelated,62,2,6,14.75,12.75
-Other,ExitRates,62,0.01027777775,0.033333333,0.066666667,0.05638888925
-Returning_Visitor,ProductRelated,8347,8,20,41,33
-Returning_Visitor,ExitRates,8347,0.0158931625,0.028165804,0.050647383,0.0347542205
+hypertension,variavel,n,q1,mediana,q3,IQR
+0,age,3708,23,42,59,36
+0,avg_glucose_level,3708,77.1975,91.265,112.1975,35
+1,age,380,53,63,74,21
+1,avg_glucose_level,380,79.1925,100.66,191.0225,111.83

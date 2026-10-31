@@ -1,4 +1,4 @@
-"""Estatísticas e figuras da EDA; somente os dados de treino entram nas etapas 2–4."""
+"""Estatísticas e figuras da EDA de AVC, sem usar o teste nas etapas 2–4."""
 
 from __future__ import annotations
 
@@ -10,21 +10,11 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 import matplotlib
 
 matplotlib.use("Agg")
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from dataset import (
-    ALL_NUMERIC,
-    CATEGORICAL,
-    ENGAGEMENT,
-    MONTHS,
-    PROJECT,
-    SEED,
-    TARGET,
-    profile_groups,
-)
+from dataset import CATEGORICAL, LOG_FEATURES, NUMERIC, PROJECT, SEED, TARGET, profile_groups
 from matplotlib.lines import Line2D
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE, trustworthiness
@@ -32,15 +22,20 @@ from sklearn.model_selection import train_test_split
 from umap import UMAP
 
 COLORS = ["#416788", "#C65D21"]
-CLASS_NAMES = ["Sem compra", "Com compra"]
+CLASS_NAMES = ["Sem AVC registrado", "Com AVC registrado"]
 LABELS = [
     Line2D([0], [0], marker="o", linestyle="", color=c, label=n)
     for c, n in zip(COLORS, CLASS_NAMES, strict=True)
 ]
+AXIS_LABELS = {
+    "age": "Idade (anos)",
+    "bmi": "IMC (kg/m²)",
+    "avg_glucose_level": "Glicose média (unidade não informada)",
+}
 
 
 def save_figure(fig, name, output=PROJECT):
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(
         output / "figures" / f"{name}.png",
         dpi=150,
@@ -51,34 +46,37 @@ def save_figure(fig, name, output=PROJECT):
 
 
 def ordered_values(frame, column):
-    if column == "Month":
-        return [m for m in MONTHS if m in set(frame[column])]
-    return sorted(frame[column].unique(), key=lambda x: (len(x), x))
+    return sorted(frame[column].dropna().unique(), key=lambda x: (len(x), x))
 
 
 def wilson(success, total):
     z = 1.96
-    p = success / total
+    proportion = success / total
     denominator = 1 + z * z / total
-    center = (p + z * z / (2 * total)) / denominator
-    half = z * np.sqrt(p * (1 - p) / total + z * z / (4 * total**2)) / denominator
+    center = (proportion + z * z / (2 * total)) / denominator
+    half = z * np.sqrt(proportion * (1 - proportion) / total + z * z / (4 * total**2)) / denominator
     return center - half, center + half
 
 
 def descriptive_tables(raw, clean, train, test, output=PROJECT):
     tables = {}
-    quality = pd.DataFrame(
+    # Unknown é uma categoria explícita, mas a fonte a define como informação ausente.
+    missing = raw.isna()
+    declared_missing = missing.copy()
+    declared_missing["smoking_status"] |= raw.smoking_status.eq("Unknown")
+    tables["quality"] = pd.DataFrame(
         {
-            "ausentes_n": raw.isna().sum(),
-            "ausentes_pct": raw.isna().mean() * 100,
+            "ausentes_n": missing.sum(),
+            "ausentes_pct": missing.mean() * 100,
+            "ausencia_declarada_n": declared_missing.sum(),
+            "ausencia_declarada_pct": declared_missing.mean() * 100,
             "cardinalidade": raw.nunique(),
         }
     )
-    quality.index.name = "variavel"
-    tables["quality"] = quality
-    numeric = train[ALL_NUMERIC].describe(percentiles=[0.25, 0.5, 0.75, 0.99]).T
-    numeric["skewness"] = train[ALL_NUMERIC].skew()
-    numeric["zero_pct"] = train[ALL_NUMERIC].eq(0).mean() * 100
+    tables["quality"].index.name = "variavel"
+    numeric = train[NUMERIC].describe(percentiles=[0.25, 0.5, 0.75, 0.99]).T
+    numeric["skewness"] = train[NUMERIC].skew()
+    numeric["missing_n"] = train[NUMERIC].isna().sum()
     tables["numeric"] = numeric
     tables["categorical"] = pd.DataFrame(
         [
@@ -103,16 +101,20 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
             for col in CATEGORICAL
         ]
     )
-    corr = train[ALL_NUMERIC].corr(method="spearman")
+    corr = train[NUMERIC].corr(method="spearman")
     tables["correlation"] = corr
-    pairs = [
-        {"variavel_1": a, "variavel_2": b, "rho": float(corr.loc[a, b])}
-        for i, a in enumerate(ALL_NUMERIC)
-        for b in ALL_NUMERIC[i + 1 :]
-    ]
-    tables["correlation_pairs"] = pd.DataFrame(pairs).sort_values(
-        "rho", key=lambda s: s.abs(), ascending=False
-    )
+    tables["correlation_pairs"] = pd.DataFrame(
+        [
+            {
+                "variavel_1": a,
+                "variavel_2": b,
+                "rho": float(corr.loc[a, b]),
+                "n_pares_completos": int(train[[a, b]].dropna().shape[0]),
+            }
+            for i, a in enumerate(NUMERIC)
+            for b in NUMERIC[i + 1 :]
+        ]
+    ).sort_values("rho", key=lambda s: s.abs(), ascending=False)
     conditional = []
     for col in CATEGORICAL:
         for cat in ordered_values(train, col):
@@ -123,7 +125,7 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
                     "variavel": col,
                     "categoria": cat,
                     "n": len(values),
-                    "compras": int(values.sum()),
+                    "avc_n": int(values.sum()),
                     "taxa_pct": values.mean() * 100,
                     "wilson_low_pct": low * 100,
                     "wilson_high_pct": high * 100,
@@ -131,11 +133,11 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
             )
     tables["category_target"] = pd.DataFrame(conditional)
     box_rows = []
-    for visitor, group in train.groupby("VisitorType"):
-        for col in ["ProductRelated", "ExitRates"]:
+    for group_value, group in train.groupby("hypertension"):
+        for col in ["age", "avg_glucose_level"]:
             box_rows.append(
                 {
-                    "VisitorType": visitor,
+                    "hypertension": group_value,
                     "variavel": col,
                     "n": len(group),
                     "q1": group[col].quantile(0.25),
@@ -145,29 +147,30 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
                 }
             )
     tables["grouped_numeric"] = pd.DataFrame(box_rows)
-    q1, q3 = train[ENGAGEMENT].quantile(0.25), train[ENGAGEMENT].quantile(0.75)
-    thresholds = q3 + 1.5 * (q3 - q1)
-    flags = train[ENGAGEMENT].gt(thresholds)
+    q1, q3 = train[NUMERIC].quantile(0.25), train[NUMERIC].quantile(0.75)
+    lower, upper = q1 - 1.5 * (q3 - q1), q3 + 1.5 * (q3 - q1)
+    flags = train[NUMERIC].lt(lower) | train[NUMERIC].gt(upper)
     tables["outliers"] = pd.DataFrame(
-        {"q1": q1, "q3": q3, "limiar_superior": thresholds, "acima_limiar_n": flags.sum()}
+        {
+            "q1": q1,
+            "q3": q3,
+            "limiar_inferior": lower,
+            "limiar_superior": upper,
+            "fora_IQR_n": flags.sum(),
+        }
     )
-    # Regras de domínio definidas antes de observar os dados; não excluir caudas válidas.
-    invalid = []
-    for col in ALL_NUMERIC:
-        invalid.append({"regra": f"{col} < 0", "n": int(raw[col].lt(0).sum())})
-    for col in ["BounceRates", "ExitRates", "SpecialDay"]:
-        invalid.append({"regra": f"{col} > 1", "n": int(raw[col].gt(1).sum())})
-    for col in ["Administrative", "Informational", "ProductRelated"]:
-        invalid.append({"regra": f"{col} não inteiro", "n": int(raw[col].mod(1).ne(0).sum())})
-    for pages, duration in zip(ENGAGEMENT[::2], ENGAGEMENT[1::2], strict=True):
+    invalid = [
+        {"regra": "id repetido", "n": int(raw.id.duplicated().sum())},
+        {"regra": "age < 0 ou > 120", "n": int((raw.age.lt(0) | raw.age.gt(120)).sum())},
+        {"regra": "avg_glucose_level <= 0", "n": int(raw.avg_glucose_level.le(0).sum())},
+        {"regra": "bmi <= 0 (entre observados)", "n": int(raw.bmi.le(0).sum())},
+    ]
+    for col in ["hypertension", "heart_disease"]:
         invalid.append(
-            {
-                "regra": f"{pages}=0 e {duration}>0",
-                "n": int((raw[pages].eq(0) & raw[duration].gt(0)).sum()),
-            }
+            {"regra": f"{col} fora de 0/1", "n": int((~raw[col].isin(["0", "1"])).sum())}
         )
     tables["domain_checks"] = pd.DataFrame(invalid)
-    classes = pd.DataFrame(
+    tables["classes"] = pd.DataFrame(
         [
             {
                 "particao": name,
@@ -184,8 +187,20 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
             for cls in [0, 1]
         ]
     )
-    tables["classes"] = classes
-    membership = pd.concat(
+    tables["missingness_target"] = pd.DataFrame(
+        [
+            {
+                "stroke": cls,
+                "n": len(group),
+                "bmi_ausente_n": int(group.bmi.isna().sum()),
+                "bmi_ausente_pct": group.bmi.isna().mean() * 100,
+                "tabagismo_unknown_n": int(group.smoking_status.eq("Unknown").sum()),
+                "tabagismo_unknown_pct": group.smoking_status.eq("Unknown").mean() * 100,
+            }
+            for cls, group in train.groupby(TARGET)
+        ]
+    )
+    tables["split"] = pd.concat(
         [
             pd.DataFrame(
                 {
@@ -197,7 +212,6 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
             for name, part in [("treino", train), ("teste", test)]
         ]
     ).sort_values("source_row")
-    tables["split"] = membership
     tables["summary_counts"] = {
         "raw_rows": len(raw),
         "clean_rows": len(clean),
@@ -207,8 +221,11 @@ def descriptive_tables(raw, clean, train, test, output=PROJECT):
         "profile_groups": int(len(np.unique(profile_groups(clean)))),
         "repeated_profile_rows": int(len(clean) - len(np.unique(profile_groups(clean)))),
         "outlier_train_rows": int(flags.any(axis=1).sum()),
-        "log_changed_train_rows": int(train[ENGAGEMENT].gt(0).any(axis=1).sum()),
-        "missing_total": int(raw.isna().sum().sum()),
+        "log_changed_train_rows": int(train[LOG_FEATURES].gt(0).any(axis=1).sum()),
+        "missing_total": int(missing.sum().sum()),
+        "unknown_smoking_rows": int(raw.smoking_status.eq("Unknown").sum()),
+        "train_bmi_missing": int(train.bmi.isna().sum()),
+        "train_bmi_median": float(train.bmi.median()),
     }
     for name, table in tables.items():
         if isinstance(table, pd.DataFrame):
@@ -226,41 +243,36 @@ def eda_figures(raw, train, tables, output=PROJECT):
     counts = raw[TARGET].value_counts().reindex([0, 1])
     bars = ax.bar(CLASS_NAMES, counts, color=COLORS, label=CLASS_NAMES)
     ax.bar_label(bars, labels=[f"{n:,} ({n / len(raw):.2%})" for n in counts], padding=4)
-    ax.set(xlabel="Desfecho da sessão", ylabel="Sessões", ylim=(0, counts.max() * 1.2))
-    ax.set_title("Figura 1 — Distribuição de Revenue no arquivo original")
+    ax.set(xlabel="AVC registrado na base", ylabel="Registros", ylim=(0, counts.max() * 1.2))
+    ax.set_title("Figura 1 — Distribuição de stroke no arquivo original")
     ax.legend()
     save_figure(fig, "01_target", output)
 
-    fig, axes = plt.subplots(5, 2, figsize=(14, 16))
-    for ax, col in zip(axes.flat, ALL_NUMERIC, strict=True):
-        # Bins em log1p apenas para visualização das caudas, sem alterar o treino.
-        if col in ENGAGEMENT + ["PageValues"]:
-            bins = np.expm1(np.linspace(0, np.log1p(train[col].max()), 32))
-            ax.set_xscale("symlog", linthresh=1)
-        else:
-            bins = 30
-        ax.hist(train[col], bins=bins, color=COLORS[0], label="Treino")
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+    for ax, col in zip(axes, NUMERIC, strict=True):
+        values = train[col].dropna()
+        ax.hist(values, bins=30, color=COLORS[0], label=f"Treino observado (n={len(values)})")
         ax.set(
-            title=f"{col} | assimetria={train[col].skew():.2f}",
-            xlabel=col + (" (symlog)" if col in ENGAGEMENT + ["PageValues"] else " (fração)"),
-            ylabel="Sessões",
+            title=f"{col} | assimetria={values.skew():.2f}",
+            xlabel=AXIS_LABELS[col],
+            ylabel="Registros",
         )
-        ax.legend()
-    fig.suptitle("Figura 2 — Distribuições numéricas (treino; PageValues somente para auditoria)")
+        ax.legend(fontsize=7)
+    fig.suptitle("Figura 2 — Distribuições numéricas antes de imputação e log1p (treino)")
     save_figure(fig, "02_numeric", output)
 
-    fig, axes = plt.subplots(4, 2, figsize=(14, 15))
+    fig, axes = plt.subplots(4, 2, figsize=(14, 14))
     for ax, col in zip(axes.flat, CATEGORICAL, strict=False):
         freq = train[col].value_counts(normalize=True).reindex(ordered_values(train, col)) * 100
         ax.bar(freq.index, freq, color=COLORS[0], label="Treino")
-        ax.set(title=col, xlabel="Categoria", ylabel="Sessões (%)")
-        ax.tick_params(axis="x", rotation=45)
+        ax.set(title=col, xlabel="Categoria", ylabel="Registros (%)")
+        ax.tick_params(axis="x", rotation=25)
         ax.legend()
     axes.flat[-1].set_visible(False)
-    fig.suptitle("Figura 3 — Frequências das sete variáveis categóricas (treino)")
+    fig.suptitle("Figura 3 — Frequências dos sete atributos categóricos (treino)")
     save_figure(fig, "03_categorical", output)
 
-    fig, ax = plt.subplots(figsize=(12, 9))
+    fig, ax = plt.subplots(figsize=(7, 5))
     sns.heatmap(
         tables["correlation"],
         cmap="vlag",
@@ -268,42 +280,39 @@ def eda_figures(raw, train, tables, output=PROJECT):
         vmin=-1,
         vmax=1,
         annot=True,
-        fmt=".2f",
+        fmt=".3f",
         ax=ax,
-        cbar_kws={"label": "Correlação de Spearman (ρ)"},
+        cbar_kws={"label": "Spearman (ρ)"},
     )
     ax.set(
         xlabel="Variável numérica",
         ylabel="Variável numérica",
-        title="Figura 4 — Correlações monotônicas (treino; PageValues em auditoria)",
+        title="Figura 4 — Correlações por pares observados (treino)",
     )
     save_figure(fig, "04_correlation", output)
 
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5))
-    for ax, (a, b) in zip(
-        axes,
-        [("ProductRelated", "ProductRelated_Duration"), ("BounceRates", "ExitRates")],
-        strict=True,
-    ):
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4))
+    for ax, (a, b) in zip(axes, [("age", "bmi"), ("age", "avg_glucose_level")], strict=True):
         for cls, color, label in zip([0, 1], COLORS, CLASS_NAMES, strict=True):
             group = train[train[TARGET].eq(cls)]
-            ax.scatter(group[a], group[b], s=8, alpha=0.3, c=color, label=label, rasterized=True)
-        ax.set(xlabel=a, ylabel=b, title=f"ρ = {tables['correlation'].loc[a, b]:.3f}")
-        if a == "ProductRelated":
-            ax.set_xscale("symlog", linthresh=1)
-            ax.set_yscale("symlog", linthresh=1)
-        ax.legend()
-    fig.suptitle("Figura 5 — Dois pares associados, coloridos pelo alvo (treino)")
+            ax.scatter(group[a], group[b], s=9, alpha=0.35, c=color, label=label)
+        ax.set(
+            xlabel=AXIS_LABELS[a],
+            ylabel=AXIS_LABELS[b],
+            title=f"ρ={tables['correlation'].loc[a, b]:.3f}",
+        )
+        ax.legend(fontsize=8)
+    fig.suptitle("Figura 5 — Idade, IMC e glicose, por alvo (treino; sem imputação)")
     save_figure(fig, "05_scatter", output)
 
-    fig, axes = plt.subplots(4, 2, figsize=(14, 15))
+    fig, axes = plt.subplots(4, 2, figsize=(14, 14))
     for ax, col in zip(axes.flat, CATEGORICAL, strict=False):
         tab = tables["category_target"].query("variavel == @col")
         x = np.arange(len(tab))
         ax.vlines(
             x, tab.wilson_low_pct, tab.wilson_high_pct, color=COLORS[0], label="IC Wilson 95%"
         )
-        ax.scatter(x, tab.taxa_pct, color=COLORS[1], label="Compra observada", zorder=3)
+        ax.scatter(x, tab.taxa_pct, color=COLORS[1], label="AVC observado", zorder=3)
         ax.axhline(
             train[TARGET].mean() * 100, color="gray", linestyle="--", label="Média do treino"
         )
@@ -311,34 +320,32 @@ def eda_figures(raw, train, tables, output=PROJECT):
             xticks=x,
             xticklabels=tab.categoria,
             xlabel="Categoria",
-            ylabel="Sessões com compra (%)",
+            ylabel="AVC registrado (%)",
             title=col,
-            ylim=(0, max(40, tab.wilson_high_pct.max() + 3)),
+            ylim=(0, max(20, tab.wilson_high_pct.max() + 3)),
         )
-        ax.tick_params(axis="x", rotation=45)
+        ax.tick_params(axis="x", rotation=25)
         ax.legend(fontsize=7)
     axes.flat[-1].set_visible(False)
-    fig.suptitle("Figura 6 — Compra por categoria, com incerteza amostral (treino)")
+    fig.suptitle("Figura 6 — Frequência do alvo por categoria, com IC (treino)")
     save_figure(fig, "06_category_target", output)
 
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5))
-    for ax, col in zip(axes, ["ProductRelated", "ExitRates"], strict=True):
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4))
+    for ax, col in zip(axes, ["age", "avg_glucose_level"], strict=True):
         sns.boxplot(
             data=train,
-            x="VisitorType",
+            x="hypertension",
             y=col,
             hue=TARGET,
             palette=COLORS,
-            order=ordered_values(train, "VisitorType"),
+            order=ordered_values(train, "hypertension"),
             showfliers=False,
             ax=ax,
         )
         handles, _ = ax.get_legend_handles_labels()
-        ax.legend(handles, CLASS_NAMES, title="Revenue")
-        ax.set(xlabel="Tipo de visitante", ylabel=col)
-        if col == "ProductRelated":
-            ax.set_yscale("symlog", linthresh=1)
-    fig.suptitle("Figura 7 — Localização e dispersão por visitante e alvo (treino; caudas ocultas)")
+        ax.legend(handles, CLASS_NAMES, title="stroke", fontsize=8)
+        ax.set(xlabel="Hipertensão (0 = não; 1 = sim)", ylabel=AXIS_LABELS[col])
+    fig.suptitle("Figura 7 — Localização e dispersão por hipertensão e alvo (treino)")
     save_figure(fig, "07_grouped", output)
 
 
@@ -408,7 +415,7 @@ def projections(matrix, train, output=PROJECT, sample_size=2000):
         ax.legend(handles=LABELS, fontsize=8)
     axes.flat[-1].set_visible(False)
     fig.suptitle(
-        f"Figura 9 — Mesmas {len(sample):,} sessões de treino em cinco projeções 2D (seed=42)"
+        f"Figura 9 — Mesmas {len(sample):,} registros de treino em cinco projeções 2D (seed=42)"
     )
     save_figure(fig, "09_projections", output)
 
@@ -426,7 +433,7 @@ def projections(matrix, train, output=PROJECT, sample_size=2000):
     diagnostics.to_csv(
         output / "tables/projection_diagnostics.csv", index=False, float_format="%.10g"
     )
-    coordinates = pd.DataFrame({"source_row": train.iloc[positions].index, "Revenue": labels})
+    coordinates = pd.DataFrame({"source_row": train.iloc[positions].index, TARGET: labels})
     for name, embedding in embeddings.items():
         coordinates[f"{name}_1"], coordinates[f"{name}_2"] = embedding[:, 0], embedding[:, 1]
     coordinates.to_csv(output / "tables/projections.csv", index=False, float_format="%.10g")

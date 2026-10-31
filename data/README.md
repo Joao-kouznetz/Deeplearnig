@@ -1,21 +1,27 @@
-# Dados e atribuição
+# Dados, fonte e atribuição
 
-Usamos o **Online Shoppers Purchasing Intention Dataset**, de C. Sakar e Yomi
-Kastro (2018), UCI Machine Learning Repository.
+**Stroke Prediction Dataset**, publicado por fedesoriano no Kaggle em 2021,
+versão 1. É um dos exemplos de classificação explicitamente linkados no
+[enunciado do projeto](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal).
 
-- Página oficial: https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset
-- DOI: https://doi.org/10.24432/C5F88Q
-- Licença dos dados: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- Arquivo: `online_shoppers_intention.csv`, 12.330 linhas, 17 atributos e alvo `Revenue`.
-- SHA-256 do CSV original: `b3055ee355f59134d851d32641183cb4a8b45def7124d2f50442a042f358e0d9`.
+- Fonte: https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
+- Metadados: https://www.kaggle.com/api/v1/datasets/view/fedesoriano/stroke-prediction-dataset
+- Arquivo: `healthcare-dataset-stroke-data.csv`.
+- Dimensões: 5.110 registros × 12 colunas, incluindo `id` e alvo `stroke`.
+- Atributos úteis: 3 numéricos e 7 categóricos.
+- SHA-256: `644d473b05d2797006bd94865e4f8bb057f0c721617911613c82c8fcfc707420`.
 
-O comando `python docs/projects/eda/code/dataset.py` baixa o ZIP oficial, lê
-somente o CSV esperado e confere seu hash **antes** de gravá-lo em `data/raw/`.
-O arquivo bruto fica fora do Git. A análise também verifica o hash em cada leitura;
-se já estiver baixado, nenhuma conexão com a UCI é necessária.
+`python docs/projects/eda/code/dataset.py` baixa o ZIP oficial com a versão fixada,
+lê somente o CSV esperado e verifica o hash antes de gravar `data/raw/`. Cada
+leitura posterior repete a checagem. Um arquivo diferente não é aceito
+silenciosamente. O endpoint público utilizado não exige credenciais Kaggle.
 
-O CSV não traz identidade de usuário, data completa, moeda de `PageValues` ou
-metadados de quando os agregados de Analytics foram calculados. Não inferimos
-esses campos. As taxas são frações; mantemos as durações na escala original,
-pois o CSV e a página da UCI não explicitam a unidade de tempo. Não há conversão
-de moeda ou identificação de pessoas.
+A fonte atribui os direitos dos arquivos aos autores originais, informa origem
+confidencial e solicita uso educacional com crédito ao publicador. Não afirmamos
+uma licença CC0 ou CC BY. O CSV bruto não está no Git; os resultados e figuras
+foram produzidos para este trabalho educacional e mantêm a atribuição.
+
+O arquivo não traz datas, instituição de coleta, unidade de glicose ou critério
+detalhado de rotulagem. `Unknown` em tabagismo é ausência de informação declarada;
+`N/A` em IMC é lido como NaN. Os dados não permitem inferir cronologia de doença
+ou representatividade populacional.

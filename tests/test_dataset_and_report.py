@@ -27,7 +27,7 @@ from preprocessing import make_preprocessor
 def test_dataset_integrity_rejects_changed_content(tmp_path):
     with pytest.raises(ValueError, match="SHA-256"):
         verify(b"conteudo diferente")
-    corrupt = tmp_path / "online_shoppers_intention.csv"
+    corrupt = tmp_path / "healthcare-dataset-stroke-data.csv"
     corrupt.write_bytes(b"arquivo corrompido")
     with pytest.raises(ValueError, match="SHA-256"):
         download(corrupt)
@@ -37,9 +37,11 @@ def test_dataset_integrity_rejects_changed_content(tmp_path):
 def test_real_data_partition_and_pipeline_match_reported_metrics():
     raw = load_data()
     clean, train, test = split_data(raw)
-    assert raw.shape == (12330, 18)
-    assert len(clean) == 12205
-    assert raw[TARGET].sum() == 1908
+    assert raw.shape == (5110, 12)
+    assert len(clean) == 5110
+    assert raw[TARGET].sum() == 249
+    assert raw.bmi.isna().sum() == 201
+    assert raw.smoking_status.eq("Unknown").sum() == 1544
     assert not set(profile_groups(train)) & set(profile_groups(test))
     pipeline = make_preprocessor()
     train_t = pipeline.fit_transform(train[FEATURES])
@@ -87,7 +89,7 @@ def test_projection_sample_is_training_only_and_all_five_maps_use_it():
     assert len(coordinates) == 2000
     assert coordinates.source_row.is_unique
     assert set(coordinates.source_row).issubset(train_indices)
-    assert np.isfinite(coordinates.drop(columns=["source_row", "Revenue"]).to_numpy()).all()
+    assert np.isfinite(coordinates.drop(columns=["source_row", TARGET]).to_numpy()).all()
     for projection in ["PCA", "t-SNE p=15", "t-SNE p=50", "UMAP k=15", "UMAP k=50"]:
         assert all(f"{projection}_{axis}" in coordinates for axis in [1, 2])
     diagnostics = pd.read_csv(PROJECT / "tables/projection_diagnostics.csv")

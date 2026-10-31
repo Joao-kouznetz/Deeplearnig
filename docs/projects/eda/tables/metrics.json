@@ -1,29 +1,32 @@
 {
-  "raw_rows": 12330,
-  "clean_rows": 12205,
-  "duplicates_removed": 125,
-  "train_rows": 9764,
-  "test_rows": 2441,
-  "profile_groups": 12205,
+  "raw_rows": 5110,
+  "clean_rows": 5110,
+  "duplicates_removed": 0,
+  "train_rows": 4088,
+  "test_rows": 1022,
+  "profile_groups": 5110,
   "repeated_profile_rows": 0,
-  "outlier_train_rows": 2944,
-  "log_changed_train_rows": 9761,
-  "missing_total": 0,
+  "outlier_train_rows": 561,
+  "log_changed_train_rows": 4088,
+  "missing_total": 201,
+  "unknown_smoking_rows": 1544,
+  "train_bmi_missing": 157,
+  "train_bmi_median": 28.1,
   "seed": 42,
-  "dataset_sha256": "b3055ee355f59134d851d32641183cb4a8b45def7124d2f50442a042f358e0d9",
+  "dataset_sha256": "644d473b05d2797006bd94865e4f8bb057f0c721617911613c82c8fcfc707420",
   "train_shape": [
-    9764,
-    72
+    4088,
+    24
   ],
   "test_shape": [
-    2441,
-    72
+    1022,
+    24
   ],
-  "pc1_variance": 0.3209684338964612,
-  "pc2_variance": 0.13149309467968495,
+  "pc1_variance": 0.3068062436942753,
+  "pc2_variance": 0.15219045611508886,
   "projection_sample_rows": 2000,
   "checks": {
-    "unseen_test_categories": "{\"Browser\": [\"9\"], \"TrafficType\": [\"17\"]}",
+    "unseen_test_categories": "Nenhuma",
     "finite": true,
     "synthetic_unknown_passed": true,
     "synthetic_missing_passed": true
@@ -33,31 +36,31 @@
       "projecao": "PCA",
       "n": 2000,
       "vizinhos_avaliacao": 10,
-      "trustworthiness": 0.8684620811287478
+      "trustworthiness": 0.8148604434366339
     },
     {
       "projecao": "t-SNE p=15",
       "n": 2000,
       "vizinhos_avaliacao": 10,
-      "trustworthiness": 0.9789618543713782
+      "trustworthiness": 0.9869332325522802
     },
     {
       "projecao": "t-SNE p=50",
       "n": 2000,
       "vizinhos_avaliacao": 10,
-      "trustworthiness": 0.9808128747795415
+      "trustworthiness": 0.9855774250440917
     },
     {
       "projecao": "UMAP k=15",
       "n": 2000,
       "vizinhos_avaliacao": 10,
-      "trustworthiness": 0.9650752582514487
+      "trustworthiness": 0.9789237591332829
     },
     {
       "projecao": "UMAP k=50",
       "n": 2000,
       "vizinhos_avaliacao": 10,
-      "trustworthiness": 0.9615707986898463
+      "trustworthiness": 0.9721308138070043
     }
   ]
 }

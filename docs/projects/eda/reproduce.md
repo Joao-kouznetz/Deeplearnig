@@ -1,4 +1,4 @@
-# Reproduzir a análise
+# Reproduzir a análise de Stroke Prediction
 
 Execute os comandos na raiz do repositório. Python 3.12 é o ambiente suportado;
 as versões das dependências científicas e do site estão fixadas em
@@ -16,17 +16,17 @@ mkdocs build --strict
 ```
 
 O download inicial requer internet. Depois, o CSV é lido localmente, sempre com
-conferência de SHA-256. Se a UCI estiver temporariamente indisponível, execute
+conferência de SHA-256. Se o Kaggle estiver temporariamente indisponível, execute
 novamente; o programa não troca de fonte nem aceita outro arquivo silenciosamente.
 
 ## O que é refeito
 
-1. Obtenção do ZIP oficial e verificação do CSV.
+1. Obtenção do ZIP oficial do Kaggle (versão 1) e verificação do CSV.
 2. Remoção determinística de duplicatas completas e divisão por perfis, seed 42.
 3. Inspeção inicial e estatísticas/figuras das seções 2–3 somente no treino.
 4. Ajuste do pré-processamento no treino, transformação do teste e verificação de
-   ausentes, infinitos e categorias desconhecidas.
-5. PCA no treino completo e cinco mapas na mesma amostra de 2.000 sessões de treino:
+   ausentes, infinitos e categorias desconhecidas; mediana e indicador para IMC ausente.
+5. PCA no treino completo e cinco mapas na mesma amostra de 2.000 registros de treino:
    PCA, t-SNE (perplexity 15/50), UMAP (n_neighbors 15/50).
 6. Escrita de `index.md`, nove PNGs numerados e tabelas em CSV/JSON.
 
@@ -54,11 +54,12 @@ X_test_t = preprocess.transform(test[FEATURES])
 feature_names = preprocess.get_feature_names_out()
 ```
 
-A matriz densa contém 72 colunas no split publicado. `make_preprocessor()` cria
+A matriz densa contém 24 colunas no split publicado. `make_preprocessor()` cria
 um objeto novo, sem ajustar estatísticas; em validação cruzada futura, construa
 um pipeline completo novo em cada fold. Os códigos categóricos devem ser strings
 como na saída de `load_data()`. Os atributos numéricos precisam respeitar o
-domínio não negativo auditado no relatório.
+domínio auditado no relatório; IMC pode ser ausente. `id` e `stroke` não são entradas.
+O indicador de ausência de IMC permanece em 0/1, junto com os indicadores one-hot.
 
 O comando principal também grava `artifacts/preprocessor.joblib` para uso local,
 fora do Git. A reprodução é definida pelo código e pelas dependências, não pela
@@ -72,7 +73,8 @@ distribuição de um binário ajustado.
 | `classes.csv`, `split.csv` | Distribuições do alvo e rastreamento de cada linha original |
 | `numeric.csv`, `categorical.csv`, `cardinality.csv` | Estatísticas completas do treino |
 | `correlation.csv`, `correlation_pairs.csv` | Spearman e ranking dos pares |
-| `category_target.csv`, `grouped_numeric.csv` | Taxas por categoria e quartis por visitante |
+| `category_target.csv`, `grouped_numeric.csv` | Taxas por categoria e quartis por hipertensão |
+| `missingness_target.csv` | Ausências de IMC e tabagismo por alvo no treino |
 | `outliers.csv` | Limites IQR calculados no treino; nenhuma remoção por esses limites |
 | `feature_names.csv` | Ordem e nomes das colunas transformadas |
 | `pca_weights.csv`, `pca_top_weights.csv` | Pesos completos e maiores pesos das duas primeiras PCs |

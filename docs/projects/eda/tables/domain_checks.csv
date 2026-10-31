@@ -1,20 +1,7 @@
 regra,n
-Administrative < 0,0
-Administrative_Duration < 0,0
-Informational < 0,0
-Informational_Duration < 0,0
-ProductRelated < 0,0
-ProductRelated_Duration < 0,0
-BounceRates < 0,0
-ExitRates < 0,0
-PageValues < 0,0
-SpecialDay < 0,0
-BounceRates > 1,0
-ExitRates > 1,0
-SpecialDay > 1,0
-Administrative não inteiro,0
-Informational não inteiro,0
-ProductRelated não inteiro,0
-Administrative=0 e Administrative_Duration>0,0
-Informational=0 e Informational_Duration>0,0
-ProductRelated=0 e ProductRelated_Duration>0,0
+id repetido,0
+age < 0 ou > 120,0
+avg_glucose_level <= 0,0
+bmi <= 0 (entre observados),0
+hypertension fora de 0/1,0
+heart_disease fora de 0/1,0
