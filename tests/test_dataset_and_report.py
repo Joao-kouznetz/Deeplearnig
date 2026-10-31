@@ -69,7 +69,7 @@ def test_report_front_matter_figures_code_and_results_summary():
     headings = re.findall(r"^## ([0-5])\.", text, re.MULTILINE)
     assert headings == list("012345")
     figures = re.findall(r"!\[[^\]]*\]\((figures/[^)]+)\)", text)
-    assert len(figures) == 9
+    assert len(figures) == 10
     for figure in figures:
         assert (PROJECT / figure).is_file()
     for link in re.findall(r"\]\((tables/[^)]+)\)", text):
@@ -114,3 +114,31 @@ def test_built_site_serves_the_figures_and_downloads_linked_in_the_report(tmp_pa
         assert published.is_file(), f"Link publicado sem arquivo: {asset}"
         assert published.read_bytes() == (PROJECT / asset).read_bytes()
     assert not list(destination.rglob("*.pyc"))
+
+
+def test_published_statistics_and_scaling_match_training_data():
+    _, train, test = split_data(load_data())
+    numerical = pd.read_csv(PROJECT / "tables/numeric.csv", index_col=0)
+    for column in ["age", "avg_glucose_level", "bmi"]:
+        observed = train[column].dropna().to_numpy()
+        np.testing.assert_allclose(numerical.loc[column, "mean"], observed.mean(), rtol=1e-8)
+        np.testing.assert_allclose(numerical.loc[column, "std"], observed.std(ddof=1), rtol=1e-8)
+        np.testing.assert_allclose(
+            numerical.loc[column, ["25%", "50%", "75%"]].to_numpy(dtype=float),
+            np.quantile(observed, [0.25, 0.5, 0.75]),
+            rtol=1e-8,
+        )
+    pipeline = make_preprocessor().fit(train[FEATURES])
+    names = pipeline.get_feature_names_out().tolist()
+    checks = pd.read_csv(PROJECT / "tables/scaling_checks.csv")
+    for partition, frame in [("treino", train), ("teste", test)]:
+        matrix = pipeline.transform(frame[FEATURES])
+        for row in checks[checks.particao.eq(partition)].itertuples():
+            values = matrix[:, names.index(row.feature)]
+            np.testing.assert_allclose(
+                [row.min, row.max, row.media, row.std_ddof0],
+                [values.min(), values.max(), values.mean(), values.std()],
+                atol=1e-9,
+            )
+            if partition == "treino":
+                np.testing.assert_allclose([values.mean(), values.std()], [0, 1], atol=1e-12)

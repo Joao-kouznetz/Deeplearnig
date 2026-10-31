@@ -2,7 +2,7 @@
 
 **Base escolhida: Stroke Prediction**, que aparece explicitamente em
 [Examples with the expected profile → Classification, no enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal).
-A escolha segue a orientação do aluno de usar uma das bases indicadas naquela página.
+A seleção de Stroke foi feita pelo assistente entre os exemplos; o aluno ainda não confirmou essa base específica.
 
 | Campo solicitado | Proposta |
 | --- | --- |

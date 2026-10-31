@@ -4,7 +4,7 @@ task: classification
 dataset: https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
 team:
   - João K Bresser
-ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base escolhida entre os exemplos do enunciado conforme orientação do aluno. Resultados calculados pela execução do código."
+ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base selecionada pelo assistente entre os exemplos do enunciado; escolha específica ainda sujeita à confirmação do aluno. Resultados calculados pela execução do código."
 ---
 
 # Projeto 1 — Análise exploratória de registros de AVC
@@ -15,8 +15,9 @@ O objetivo desta entrega é entender os dados e preparar um pipeline para uma fu
 nenhum classificador é treinado e nenhuma métrica de desempenho preditivo é alegada.
 
 A base **Stroke Prediction** é um dos exemplos de classificação explicitamente linkados no
-[enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). Ela foi selecionada
-conforme orientação do aluno para usar uma base indicada naquela página.
+[enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). Ela foi selecionada pelo assistente
+entre os exemplos; a escolha específica ainda pode ser confirmada ou alterada pelo aluno.
+[Conferência com as aulas e exercícios](course_alignment.md).
 **Uso de IA:** implementação, redação e interpretações foram produzidas com OpenAI Codex;
 os números são resultados de execução, e a revisão e compreensão pelo aluno continuam necessárias.
 
@@ -44,8 +45,8 @@ origem confidencial e a ausência de datas, que impedem verificar disponibilidad
 antes do desfecho ou representatividade da população.
 
 [Proposta completa e vínculo com o enunciado](proposal.md). A página apresenta exemplos de bases e
-uma regra geral de aprovação; não publica decisões individuais sobre equipes. Registramos a escolha
-indicada pelo aluno, sem inventar comprovante de envio de formulário ou aprovação individual.
+uma regra geral de aprovação; não publica decisões individuais sobre equipes. Registramos a seleção
+feita pelo assistente, sem inventar comprovante de envio de formulário ou aprovação individual.
 A mesma base será mantida na futura entrega de classificação.
 
 ## 1. Initial inspection
@@ -400,6 +401,14 @@ níveis raros. As três medidas numéricas ficam com variância unitária após 
 de ponderação dá mais peso às medidas contínuas na distância euclidiana; deve ser considerada na
 leitura das projeções e revisada em validação futura, sem consultar o teste.
 
+![Figura 8 — Glicose antes e depois da transformação](figures/08_transformation.png)
+
+**Conclusão da Figura 8:** log1p comprime a cauda da glicose; a padronização posterior
+centraliza e muda a escala, sem mudar novamente a forma. Os dois painéis mostram os mesmos
+registros, com bins nas respectivas unidades. Um histograma mais simétrico não comprova melhora
+preditiva: log1p é uma escolha inicial a comparar com a escala original em validação interna
+do treino, como enfatiza a aula de transformações. Nenhum modelo foi avaliado nesta entrega.
+
 ### B. Dimensionality reduction
 
 PCA recebe a matriz preparada de **4.088 registros de treino**, sem alvo nem `id`.
@@ -411,9 +420,9 @@ Parâmetros: PCA com SVD completa; t-SNE com perplexity **15 e 50**, inicializa�
 learning_rate automático, 1.000 iterações; UMAP com n_neighbors **15 e 50**, min_dist 0.1,
 distância euclidiana. Todos os random_state e transform_seed explícitos são **42**, com uma thread.
 
-![Figura 8 — Variância explicada da PCA](figures/08_pca_variance.png)
+![Figura 9 — Variância explicada da PCA](figures/09_pca_variance.png)
 
-**Conclusão da Figura 8:** PC1 explica **30,68%**, PC2
+**Conclusão da Figura 9:** PC1 explica **30,68%**, PC2
 **15,22%**; juntas, **45,90%**.
 São necessárias **10 componentes** para pelo menos 90%. O mapa 2D deixa informação de fora.
 
@@ -434,15 +443,15 @@ a geometria. [Todos os pesos](tables/pca_weights.csv).
 | PC2          | category__ever_married_Yes | -0.092388 |
 | PC2          | category__ever_married_No  |  0.092388 |
 
-- **PC1:** maiores pesos positivos entre os três principais: `direct__age`, `log__bmi`, `log__avg_glucose_level`; negativos: nenhum. Pesos do mesmo sinal variam juntos no eixo; sinais opostos se contrapõem.
-- **PC2:** maiores pesos positivos entre os três principais: `log__avg_glucose_level`; negativos: `log__bmi`, `direct__age`. Pesos do mesmo sinal variam juntos no eixo; sinais opostos se contrapõem.
+- **PC1:** maiores pesos positivos entre os três principais: `direct__age`, `log__bmi`, `log__avg_glucose_level`; negativos: nenhum. Pesos do mesmo sinal contribuem no mesmo sentido para a coordenada; sinais opostos se contrapõem. Isso não prova correlação entre as variáveis originais.
+- **PC2:** maiores pesos positivos entre os três principais: `log__avg_glucose_level`; negativos: `log__bmi`, `direct__age`. Pesos do mesmo sinal contribuem no mesmo sentido para a coordenada; sinais opostos se contrapõem. Isso não prova correlação entre as variáveis originais.
 
 Esses pesos descrevem combinações de idade, medidas transformadas e categorias, não causas do
 alvo nem importância preditiva. O indicador de ausência é lido como característica de registro.
 
-![Figura 9 — PCA, t-SNE e UMAP na mesma amostra](figures/09_projections.png)
+![Figura 10 — PCA, t-SNE e UMAP na mesma amostra](figures/10_projections.png)
 
-**Conclusão da Figura 9:** mapas não lineares revelam concentrações locais que o mapa linear
+**Conclusão da Figura 10:** mapas não lineares revelam concentrações locais que o mapa linear
 sobrepõe, mas a distribuição visual muda com os parâmetros e as classes continuam misturadas.
 Tamanho das ilhas e distância entre ilhas em t-SNE/UMAP não medem prevalência nem dissimilaridade global.
 Não usamos uma ilha como diagnóstico, classe descoberta ou prova de desempenho de modelo.
@@ -517,6 +526,26 @@ inclusive se um fold não tiver IMC ausente. Os casos sintéticos não modificam
 |                  22 | category__smoking_status_never smoked    |
 |                  23 | category__smoking_status_smokes          |
 
+**Tabela 17 — Faixas e momentos finais das três medidas numéricas.**
+
+| particao   | feature                |       min |      max |     media |   std_ddof0 |
+|:-----------|:-----------------------|----------:|---------:|----------:|------------:|
+| treino     | direct__age            | -1.921520 | 1.714299 | -0.000000 |    1.000000 |
+| treino     | log__avg_glucose_level | -1.615684 | 2.820765 |  0.000000 |    1.000000 |
+| treino     | log__bmi               | -3.400128 | 4.974174 | -0.000000 |    1.000000 |
+| teste      | direct__age            | -1.917969 | 1.714299 | -0.032814 |    1.016999 |
+| teste      | log__avg_glucose_level | -1.596251 | 2.767273 | -0.001870 |    1.032009 |
+| teste      | log__bmi               | -3.809351 | 4.737090 |  0.015612 |    1.075850 |
+
+StandardScaler usa desvio populacional (ddof=0): a média é aproximadamente zero e o desvio
+é um no treino; isso não é uma exigência para o teste. As médias/desvios descritivos da Tabela 5
+usam dados observados e desvio amostral, portanto não devem ser confundidos com estes valores.
+A padronização não limita a saída a [-1,1]. O exercício 3 aceita StandardScaler ou MinMaxScaler;
+esta EDA usa a primeira alternativa. Não afirmamos que a faixa seja limitada nem que tanh esteja
+livre de saturação; avaliar a ativação e uma alternativa MinMax em validação pertence à modelagem.
+One-hot e indicador de ausência continuam em 0/1; o [CSV completo](tables/scaling_checks.csv)
+permite conferir as faixas numéricas sem inferir parâmetros do teste.
+
 Os testes comparam medianas, médias e vocabulários com o treino, transformam um teste sintético com
 valores extremos e verificam que o estado ajustado não muda. Também verificam o descarte de `id` e
 alvo, grupos, integridade do CSV, indicador de ausência e links dos arquivos no site compilado.
@@ -535,7 +564,7 @@ Para quem preparará o modelo:
   reamostragem e escolha de limiar pertencem aos folds de treino/validação, sem consultar o teste.
 - **Ausência informativa:** IMC tem 201 ausentes no bruto e tabagismo tem
   1.544 Unknown (Tabela 2). As frequências variam por alvo no treino
-  (Tabela 11). Mediana, indicador de ausência e categoria Unknown preservam tamanho e informação;
+  (Tabela 11). Mediana preserva o tamanho da matriz; o indicador e Unknown sinalizam ausência, sem recuperar o valor real;
   monitorar esses padrões em novos dados e revisar sua origem.
 - **Caudas e escalas:** Tabela 5 e Figura 2 justificam log1p em glicose/IMC e padronização.
   561 registros ultrapassam limites IQR (Tabela 12), mas não foram
@@ -543,15 +572,14 @@ Para quem preparará o modelo:
 - **Associações e confundimento:** maior correlação numérica é 0.376325 (Tabela 8, Figuras 4–5).
   Tabelas 9–10 e Figuras 6–7 mostram diferenças por grupos que podem refletir idade e composição
   amostral. Não transformar associação em causalidade ou usar categoria rara como regra conclusiva.
-- **Redução:** PC1+PC2 preserva 45,90% da variância (Figura 8).
-  A Figura 9 e Tabela 14 comparam preservação local e sensibilidade dos mapas, sem evidência de
+- **Redução:** PC1+PC2 preserva 45,90% da variância (Figura 9).
+  A Figura 10 e Tabela 14 comparam preservação local e sensibilidade dos mapas, sem evidência de
   separação perfeita. O pipeline final preserva todas as colunas preparadas; redução não é obrigatória.
 - **Origem e temporalidade:** a fonte é confidencial e não há datas. Antes de qualquer alegação de
   previsão futura, obter cronologia, representatividade, critérios de rótulo e disponibilidade prévia
   dos atributos. A EDA atual se limita a registros observados para finalidade educacional.
 
-A base foi escolhida dentre os exemplos explicitamente indicados no enunciado, conforme orientação
-do aluno. Código, relatório, figuras e tabelas são versionados; dados brutos são obtidos da fonte
+A base foi escolhida dentre os exemplos explicitamente indicados no enunciado, por seleção do assistente; a confirmação específica pelo aluno permanece em aberto. Código, relatório, figuras e tabelas são versionados; dados brutos são obtidos da fonte
 com versão e hash fixados. O README e o front matter declaram integralmente o uso de IA.
 
 ### Results summary

@@ -28,7 +28,7 @@ novamente; o programa não troca de fonte nem aceita outro arquivo silenciosamen
    ausentes, infinitos e categorias desconhecidas; mediana e indicador para IMC ausente.
 5. PCA no treino completo e cinco mapas na mesma amostra de 2.000 registros de treino:
    PCA, t-SNE (perplexity 15/50), UMAP (n_neighbors 15/50).
-6. Escrita de `index.md`, nove PNGs numerados e tabelas em CSV/JSON.
+6. Escrita de `index.md`, dez PNGs numerados e tabelas em CSV/JSON.
 
 PCA e embeddings são métodos de exploração, não classificadores. O alvo nunca é
 passado ao ajuste dos redutores. Todas as seeds explícitas são 42, e o processo
@@ -76,6 +76,7 @@ distribuição de um binário ajustado.
 | `category_target.csv`, `grouped_numeric.csv` | Taxas por categoria e quartis por hipertensão |
 | `missingness_target.csv` | Ausências de IMC e tabagismo por alvo no treino |
 | `outliers.csv` | Limites IQR calculados no treino; nenhuma remoção por esses limites |
+| `scaling_checks.csv` | Faixas e momentos das três medidas após transformar treino/teste |
 | `feature_names.csv` | Ordem e nomes das colunas transformadas |
 | `pca_weights.csv`, `pca_top_weights.csv` | Pesos completos e maiores pesos das duas primeiras PCs |
 | `projections.csv`, `projection_diagnostics.csv` | Índices, coordenadas e preservação de vizinhanças |
