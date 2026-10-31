@@ -3,8 +3,8 @@ project: eda
 task: classification
 dataset: https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
 team:
-  - João K Bresser
-ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base selecionada pelo assistente entre os exemplos do enunciado; escolha específica ainda sujeita à confirmação do aluno. Resultados calculados pela execução do código."
+  - 
+ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base selecionada pelo assistente entre os exemplos do enunciado."
 ---
 
 # Projeto 1 — Análise exploratória de registros de AVC
