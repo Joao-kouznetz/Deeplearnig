@@ -2,7 +2,7 @@
 
 **Base escolhida: Stroke Prediction**, que aparece explicitamente em
 [Examples with the expected profile → Classification, no enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal).
-A seleção de Stroke foi feita pelo assistente entre os exemplos; o aluno ainda não confirmou essa base específica.
+O aluno confirmou que escolheu a base fornecida pelo professor entre as opções do enunciado.
 
 | Campo solicitado | Proposta |
 | --- | --- |
@@ -24,10 +24,9 @@ justificar decisões concretas de pré-processamento para uma futura rede neural
 A análise é educacional e observacional, sem apresentar associação como causa ou
 como estimativa de risco futuro.
 
-A página do trabalho apresenta exemplos e a regra geral de aprovação da proposta;
-não publica decisões individuais por equipe. O vínculo com o enunciado está
-verificado, mas não inventamos comprovante de envio de formulário ou aprovação
-individual. A base será mantida na futura entrega de classificação.
+A escolha utiliza uma das bases fornecidas pelo professor no próprio enunciado,
+conforme confirmado pelo aluno. Esse é o fundamento da escolha da base para o projeto.
+A mesma base é utilizada na [entrega de classificação](../classification/index.md).
 
 Atribuição: fedesoriano (2021). Os metadados reservam os direitos aos autores
 originais e indicam uso educacional, com origem confidencial. O CSV bruto não é

@@ -214,7 +214,7 @@ task: classification
 dataset: {SOURCE}
 team:
   - João K Bresser
-ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base selecionada pelo assistente entre os exemplos do enunciado; escolha específica ainda sujeita à confirmação do aluno. Resultados calculados pela execução do código."
+ai_use: "Projeto feito usando inteligência artificial (OpenAI Codex): código, análise, gráficos, testes e redação. Base escolhida pelo aluno entre as opções fornecidas pelo professor no enunciado. Resultados calculados pela execução do código."
 ---
 
 # Projeto 1 — Análise exploratória de registros de AVC
@@ -225,8 +225,8 @@ O objetivo desta entrega é entender os dados e preparar um pipeline para uma fu
 nenhum classificador é treinado e nenhuma métrica de desempenho preditivo é alegada.
 
 A base **Stroke Prediction** é um dos exemplos de classificação explicitamente linkados no
-[enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). Ela foi selecionada pelo assistente
-entre os exemplos; a escolha específica ainda pode ser confirmada ou alterada pelo aluno.
+[enunciado](https://insper.github.io/ann-dl/2026.2/projects/eda/#0-proposal). A base foi escolhida pelo aluno
+entre as opções fornecidas pelo professor para o projeto.
 **Uso de IA:** implementação, redação e interpretações foram produzidas com OpenAI Codex;
 os números são resultados de execução, e a revisão e compreensão pelo aluno continuam necessárias.
 
@@ -253,10 +253,9 @@ características registradas e o indicador de AVC. A combinação de variáveis 
 origem confidencial e a ausência de datas, que impedem verificar disponibilidade dos atributos
 antes do desfecho ou representatividade da população.
 
-[Proposta completa e vínculo com o enunciado](proposal.md). A página apresenta exemplos de bases e
-uma regra geral de aprovação; não publica decisões individuais sobre equipes. Registramos a seleção
-feita pelo assistente, sem inventar comprovante de envio de formulário ou aprovação individual.
-A mesma base será mantida na futura entrega de classificação.
+[Proposta completa e vínculo com o enunciado](proposal.md). A escolha utiliza uma das bases
+fornecidas pelo professor no próprio enunciado, conforme confirmado pelo aluno.
+A mesma base é utilizada na [entrega de classificação](../classification/index.md).
 
 ## 1. Initial inspection
 
@@ -611,7 +610,7 @@ Para quem preparará o modelo:
   previsão futura, obter cronologia, representatividade, critérios de rótulo e disponibilidade prévia
   dos atributos. A EDA atual se limita a registros observados para finalidade educacional.
 
-A base foi escolhida dentre os exemplos explicitamente indicados no enunciado, por seleção do assistente; a confirmação específica pelo aluno permanece em aberto. Código, relatório, figuras e tabelas são versionados; dados brutos são obtidos da fonte
+O aluno confirmou a escolha da base fornecida pelo professor entre as opções do enunciado. Código, relatório, figuras e tabelas são versionados; dados brutos são obtidos da fonte
 com versão e hash fixados. O README e o front matter declaram integralmente o uso de IA.
 
 ### Results summary
