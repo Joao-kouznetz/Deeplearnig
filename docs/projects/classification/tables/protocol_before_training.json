@@ -1,0 +1,151 @@
+{
+  "registered_at_utc": "2026-11-17T14:00:40.478419+00:00",
+  "source_fingerprint": "e4806b88190a18b936760595b4760dcdf651f14d803d1f666531c1b36d44964b",
+  "protocol": {
+    "task": "classification",
+    "target": "stroke",
+    "primary_metric": "average_precision",
+    "success_relative_improvement": 0.1,
+    "success_definition": "AP média da rede no teste >= 1.10 * AP no teste do baseline escolhido por AP de validação",
+    "split_seed": 42,
+    "search_seed": 42,
+    "final_seeds": [
+      42,
+      43,
+      44
+    ],
+    "max_epochs": 200,
+    "patience": 25,
+    "min_delta": 0.0001,
+    "batch_size": 128,
+    "threshold_rule": "maximizar F2 na validação; empate: maior limiar; Dummy fixo em 0.5",
+    "selection_rule": "maior average_precision na validação no checkpoint de menor BCE ponderada; empate: id lexicográfico",
+    "regularization_comparison": "c01-c04: mesma arquitetura, lr e seed; early stopping comum, sem regularização explícita vs L2 vs dropout vs ambos",
+    "subgroups": [
+      "age < 45",
+      "45 <= age < 65",
+      "age >= 65",
+      "hypertension",
+      "gender",
+      "bmi missing",
+      "smoking_status"
+    ],
+    "permutation_partition": "validation",
+    "permutation_repeats": 20,
+    "configurations": [
+      {
+        "id": "c01",
+        "hidden": [
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.0,
+        "weight_decay": 0.0
+      },
+      {
+        "id": "c02",
+        "hidden": [
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.0,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c03",
+        "hidden": [
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.2,
+        "weight_decay": 0.0
+      },
+      {
+        "id": "c04",
+        "hidden": [
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.2,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c05",
+        "hidden": [
+          16
+        ],
+        "lr": 0.001,
+        "dropout": 0.0,
+        "weight_decay": 0.0
+      },
+      {
+        "id": "c06",
+        "hidden": [
+          64,
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.0,
+        "weight_decay": 0.0
+      },
+      {
+        "id": "c07",
+        "hidden": [
+          64,
+          32
+        ],
+        "lr": 0.001,
+        "dropout": 0.2,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c08",
+        "hidden": [
+          32
+        ],
+        "lr": 0.0003,
+        "dropout": 0.0,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c09",
+        "hidden": [
+          32
+        ],
+        "lr": 0.003,
+        "dropout": 0.0,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c10",
+        "hidden": [
+          64,
+          32
+        ],
+        "lr": 0.0003,
+        "dropout": 0.2,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c11",
+        "hidden": [
+          64,
+          32
+        ],
+        "lr": 0.003,
+        "dropout": 0.2,
+        "weight_decay": 0.001
+      },
+      {
+        "id": "c12",
+        "hidden": [
+          32,
+          16
+        ],
+        "lr": 0.001,
+        "dropout": 0.4,
+        "weight_decay": 0.01
+      }
+    ]
+  }
+}

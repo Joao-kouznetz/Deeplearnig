@@ -1,0 +1,53 @@
+{
+  "evaluated_at_utc": "2026-11-17T14:01:12.874109+00:00",
+  "source_fingerprint": "e4806b88190a18b936760595b4760dcdf651f14d803d1f666531c1b36d44964b",
+  "baseline": "Logistic",
+  "baseline_ap": 0.19468250627626543,
+  "mlp_ap_mean": 0.18238519132349781,
+  "mlp_ap_std": 0.017729774885964576,
+  "gap": -0.012297314952767618,
+  "relative_gain": -0.06316599877400919,
+  "success": false,
+  "test_rows": 1022,
+  "test_positive": 50,
+  "final_training": [
+    {
+      "seed": 42,
+      "threshold": 0.622840404510498,
+      "best_epoch": 49,
+      "stopped_epoch": 74,
+      "best_val_loss": 0.8234682679176331,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    },
+    {
+      "seed": 43,
+      "threshold": 0.5106809735298157,
+      "best_epoch": 128,
+      "stopped_epoch": 153,
+      "best_val_loss": 0.7802022695541382,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    },
+    {
+      "seed": 44,
+      "threshold": 0.4549929201602936,
+      "best_epoch": 98,
+      "stopped_epoch": 123,
+      "best_val_loss": 0.7938439846038818,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    }
+  ],
+  "python": "3.12.4",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.2.6",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "torch": "2.14.1",
+    "scipy": "1.14.0",
+    "matplotlib": "3.9.2"
+  },
+  "test_policy": "Uma avaliação em lote de modelos e seeds pré-fixados; nenhum ajuste posterior ao teste."
+}

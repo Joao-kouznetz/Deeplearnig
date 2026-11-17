@@ -1,0 +1,53 @@
+{
+  "selected_at_utc": "2026-11-17T14:00:55.592302+00:00",
+  "source_fingerprint": "e4806b88190a18b936760595b4760dcdf651f14d803d1f666531c1b36d44964b",
+  "dataset_sha256": "644d473b05d2797006bd94865e4f8bb057f0c721617911613c82c8fcfc707420",
+  "config": {
+    "id": "c05",
+    "hidden": [
+      16
+    ],
+    "lr": 0.001,
+    "dropout": 0.0,
+    "weight_decay": 0.0
+  },
+  "baseline": "Logistic",
+  "baseline_thresholds": {
+    "Dummy": 0.5,
+    "Logistic": 0.5241050720214844,
+    "RandomForest": 0.21228548607245254
+  },
+  "train_rows": 3270,
+  "validation_rows": 818,
+  "test_rows": 1022,
+  "n_features": 24,
+  "train_positive": 159,
+  "validation_positive": 40,
+  "train_bmi_median": 28.1,
+  "feature_names": [
+    "log__avg_glucose_level",
+    "log__bmi",
+    "direct__age",
+    "missing__missingindicator_bmi",
+    "category__gender_Female",
+    "category__gender_Male",
+    "category__gender_Other",
+    "category__hypertension_0",
+    "category__hypertension_1",
+    "category__heart_disease_0",
+    "category__heart_disease_1",
+    "category__ever_married_No",
+    "category__ever_married_Yes",
+    "category__work_type_Govt_job",
+    "category__work_type_Never_worked",
+    "category__work_type_Private",
+    "category__work_type_Self-employed",
+    "category__work_type_children",
+    "category__Residence_type_Rural",
+    "category__Residence_type_Urban",
+    "category__smoking_status_Unknown",
+    "category__smoking_status_formerly smoked",
+    "category__smoking_status_never smoked",
+    "category__smoking_status_smokes"
+  ]
+}

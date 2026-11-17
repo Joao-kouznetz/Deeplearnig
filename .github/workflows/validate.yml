@@ -1,4 +1,4 @@
-name: Validar EDA
+name: Validar EDA e classificação
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
   reproduce:
     name: Reproduzir, testar e construir o site
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       MPLBACKEND: Agg
       OPENBLAS_NUM_THREADS: '1'
@@ -29,16 +29,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12.16'
+          python-version: '3.12'
           cache: pip
       - name: Instalar dependências fixadas
         run: python -m pip install -r requirements.txt
       - name: Conferir estilo
         run: |
-          ruff check docs/projects/eda/code tests
-          ruff format --check docs/projects/eda/code tests
+          ruff check docs/projects/eda/code docs/projects/classification/code tests
+          ruff format --check docs/projects/eda/code docs/projects/classification/code tests
       - name: Reproduzir os resultados a partir dos dados oficiais
         run: python docs/projects/eda/code/analyze.py
+      - name: Reproduzir classificação sem sobrescrever a entrega
+        run: python docs/projects/classification/code/experiment.py all --output-dir artifacts/reproduction
       - name: Verificar contratos e resultados
         run: python -m pytest -q
       - name: Construir documentação sem avisos
@@ -46,6 +48,14 @@ jobs:
       - name: Disponibilizar site para revisão
         uses: actions/upload-artifact@v4
         with:
-          name: site-eda
+          name: site-projetos
           path: site/
+          retention-days: 30
+      - name: Disponibilizar auditoria do retreino
+        uses: actions/upload-artifact@v4
+        with:
+          name: classificacao-reproduzida
+          path: |
+            artifacts/reproduction/tables/
+            artifacts/reproduction/figures/
           retention-days: 30

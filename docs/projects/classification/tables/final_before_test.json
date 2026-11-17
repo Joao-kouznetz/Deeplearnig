@@ -1,0 +1,38 @@
+{
+  "frozen_at_utc": "2026-11-17T14:01:11.981567+00:00",
+  "source_fingerprint": "e4806b88190a18b936760595b4760dcdf651f14d803d1f666531c1b36d44964b",
+  "training": [
+    {
+      "seed": 42,
+      "threshold": 0.622840404510498,
+      "best_epoch": 49,
+      "stopped_epoch": 74,
+      "best_val_loss": 0.8234682679176331,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    },
+    {
+      "seed": 43,
+      "threshold": 0.5106809735298157,
+      "best_epoch": 128,
+      "stopped_epoch": 153,
+      "best_val_loss": 0.7802022695541382,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    },
+    {
+      "seed": 44,
+      "threshold": 0.4549929201602936,
+      "best_epoch": 98,
+      "stopped_epoch": 123,
+      "best_val_loss": 0.7938439846038818,
+      "pos_weight": 19.566037735849058,
+      "parameters": 417
+    }
+  ],
+  "baseline_thresholds": {
+    "Dummy": 0.5,
+    "Logistic": 0.5241050720214844,
+    "RandomForest": 0.21228548607245254
+  }
+}

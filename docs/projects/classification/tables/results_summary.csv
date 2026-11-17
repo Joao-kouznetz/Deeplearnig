@@ -1,0 +1,9 @@
+#,Summary,Value
+1,"Dataset, task, target and main metric",Stroke Prediction v1; classificação binária; stroke; Average Precision (PR-AUC por degraus)
+2,Train · validation · test (rows),3270 · 818 · 1022
+3,Best baseline and its test metric,Logistic (escolhido na validação); AP teste=0.194683
+4,"Chosen network: layers × units, number of parameters, regularization",24 → 16 → 1; 417 parâmetros; dropout=0.0; L2=0.0; early stopping
+5,"Optimizer, learning rate, batch and the epoch it stopped at","Adam; lr=0.001; batch=128; parada=74, restaura época 49 (seed 42)"
+6,"The network's main metric on the test set (mean ± std, 3 seeds)","AP=0.182385 ± 0.017730; seeds 42,43,44; ddof=1"
+7,Success criterion met?,Não; ganho relativo=-6.32%; meta=+10%; AP necessária=0.214151
+8,Subgroup with the largest error and its value,age=>=65; erro=74.63%; n=205; seed 42

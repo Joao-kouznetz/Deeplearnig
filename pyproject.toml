@@ -1,6 +1,6 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["docs/projects/eda/code"]
+pythonpath = ["docs/projects/eda/code", "docs/projects/classification/code"]
 
 [tool.ruff]
 line-length = 100
@@ -9,3 +9,7 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Variáveis de threads/backend precisam preceder as importações científicas.
+"docs/projects/classification/code/experiment.py" = ["E402"]
